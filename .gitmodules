@@ -1,4 +1,4 @@
 [submodule "nlohmann-json"]
-	path = nlohmann-json
+	path = src/nlohmann-json
 	url = https://github.com/nlohmann/json.git
         branch = v3.10.5

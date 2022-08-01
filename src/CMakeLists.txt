@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.0)
 
 project(pam_sram_oidc VERSION 0.1.0 DESCRIPTION "PAM module")
 
@@ -10,10 +10,21 @@ add_library(pam_sram_oidc
     SHARED
     pam_sram_oidc.c
     logging.c
-    pam_sm_authenticate.cpp
+    sram_oidc_authenticate.cpp
+    url_request.cpp    
 )
 
-add_executable(testme testme.cpp)
+target_link_libraries(pam_sram_oidc -lcurl)
+
+SET_TARGET_PROPERTIES(pam_sram_oidc PROPERTIES PREFIX "")
+
+add_executable(
+  pamtester
+  pamtester.cpp
+)
+target_link_libraries(
+  pamtester -lpam
+)
 
 # todo other os than ubuntu
 install(TARGETS pam_sram_oidc
