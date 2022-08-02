@@ -126,7 +126,19 @@ nlohmann::json validate_token(const std::string & token, const std::string & int
     return json::parse(res);
 }
 
+bool check_user(const std::string & user,
+                const std::string & remote_user) {
+    std::size_t pos = remote_user.find('@');
+    if(remote_user.compare(0, pos, user) == 0){
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 int sram_oidc_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv) {
+    using json = nlohmann::json;
     logging_pamh = pamh;
     if(argc < 1) {
         logging(LOG_ERR, "pam_sram_oidc.so: missing first argument (SRAM configuration file)");
@@ -138,9 +150,11 @@ int sram_oidc_authenticate(pam_handle_t *pamh, int flags, int argc, const char *
         return PAM_USER_UNKNOWN;
     }
 
-    nlohmann::json config;
+    json config;
     try {
         config = read_config_file(argv[0]);
+        json::json_pointer result_ptr(config.value("result_field",
+                                                   "/eduperson_principal_name/0"));
         std::string token = get_token_from_client(pamh);
         bool save_token = false;
         if(token.empty()) {
@@ -151,9 +165,14 @@ int sram_oidc_authenticate(pam_handle_t *pamh, int flags, int argc, const char *
         if(!result.contains("sub")) {
             return PAM_AUTH_ERR;
         }
+        if(result.contains(result_ptr)) {
+            if(check_user(user, result.at(result_ptr).get<std::string>())) {
+                return PAM_SUCCESS;
+            }
+        }
     } catch (const std::exception & ex) {
         logging(LOG_ERR, "pam_sram_oidc.so: failed to load %s", ex.what());
         return PAM_AUTH_ERR;
     }
-    return (PAM_SUCCESS);
+    return PAM_AUTH_ERR;
 }

@@ -1,0 +1,13 @@
+{
+    "authorization_ep": "$authorization_ep",
+    "response_type": "$response_type",
+    "scope": "$scope",
+    "access_type": "$access_type",
+    "prompt": "$prompt",
+    "token_ep": "$token_ep",
+    "introspect_url": "$introspect_url",
+    "client_id": "$client_id",
+    "client_secret": "$client_secret",
+    "redirect_uri": "$redirect_uri",
+    "result_field": "$result_field"
+}

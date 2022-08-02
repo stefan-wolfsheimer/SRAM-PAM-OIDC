@@ -1,1 +1,1 @@
-auth        required      pam_sram_oidc.so
+auth        required      pam_sram_oidc.so  /etc/sram_config.json

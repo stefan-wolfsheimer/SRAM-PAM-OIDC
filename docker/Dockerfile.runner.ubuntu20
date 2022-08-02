@@ -1,0 +1,37 @@
+FROM ubuntu:20.04
+
+RUN apt-get update && \
+    apt-get install -y \
+        gcc \
+        g++ \
+        cmake \
+        libpam-dev \
+        libcurl4-openssl-dev \
+        libboost-dev \
+        pamtester \
+        rsyslog && \
+    apt-get clean
+
+ADD docker/sram /etc/pam.d/sram
+ADD . /source
+WORKDIR /build
+RUN mkdir /packages && \
+    cmake /source && \
+    make && \
+    cpack
+
+FROM ubuntu:20.04
+COPY --from=0 /packages/sram-pam-oidc_0.0.1-1_amd64.deb /packages/sram-pam-oidc_0.0.1-1_amd64.deb
+
+ADD docker/entrypoint.sh /app/entrypoint.sh
+
+RUN apt-get update && \
+    apt-get install -y \
+    rsyslog  \
+    libpam-dev  \
+    libcurl4-openssl-dev \
+    gettext-base && \
+    apt-get clean && \
+    dpkg --install /packages/sram-pam-oidc_0.0.1-1_amd64.deb
+
+ENTRYPOINT [ "/app/entrypoint.sh" ]

@@ -8,10 +8,9 @@ git submodule update --init --recursive
 
 # Build
 
-## Build in container
+## Build DEB package for ubuntu 20
 
-### Build container
-
+Prepare build image
 ```
 export PACKAGE_DIR=/path/to/target_package_dir
 export BUILD_DIR=/path/to/build_dir
@@ -19,52 +18,61 @@ export BUILD_DIR=/path/to/build_dir
 mkdir -p $PACKAGE_DIR
 mkdir -p $BUILD_DIR
 
-docker build -t sram-pam-oidc -f docker/Dockerfile.ubuntu20 .
-
-docker run -ti --rm sram-pam-oidc  -v $( pwd )/src:/source -v $PACKAGE_DIR:/packages -v $BUILD_DIR/:/build bash
-
+docker build -t sram-pam-oidc-builder \
+             -f docker/Dockerfile.builder.ubuntu20 .
 ```
 
-
-## Build requirements
-
-* gcc / g++
-* cmake
-* libpam-dev
-* libcurl4-openssl-dev
-
-Optional:
-* pamtester
-
-Install requirements on Ubuntu
-
+Compile and package
 ```
-sudo apt install gcc
-sudo apt install g++
-sudo apt install cmake
-sudo apt install libpam-dev
-sudo apt install libcurl4-openssl-dev
-sudo apt install python3-flask
+docker run --rm --workdir /build \
+           -v $( pwd )/:/source \
+           -v $BUILD_DIR/:/build \
+           sram-pam-oidc-builder \
+           cmake /source
+
+docker run --rm --env VERBOSE=1 --workdir /build \
+            -v $( pwd )/:/source \
+            -v $BUILD_DIR/:/build \
+            sram-pam-oidc-builder \
+            make
+
+docker run --rm --workdir /build \
+       -v $( pwd )/:/source \
+       -v $BUILD_DIR/:/build \
+       -v $PACKAGE_DIR:/packages \
+       sram-pam-oidc-builder cpack
+```    
+
+Launch interactive build system
+```
+docker run -ti --rm   \
+       -v $( pwd ):/source \
+       -v $PACKAGE_DIR:/packages \
+       -v $BUILD_DIR/:/build sram-pam-oidc-builder bash
 ```
 
-Optional
-```
-sudo apt install pamtester
-```
+# Runner in a container
 
 ## Build
+Build runner
 ```
-cmake  << PATH TO SRAM-PAM-OIDC >>
-make
-```
-
-## Install
-
-Ubuntu
-```
-sudo make install
+docker build -t sram-pam-oidc-runner \
+             -f docker/Dockerfile.runner.ubuntu20 .
 ```
 
+## Configure
+```
+cp env.template env
+```
+and edit env
 
-Redhat
-TODO
+## Run PAM authentication flow
+Interactive container
+```
+docker run -ti --rm --env-file env sram-pam-oidc-runner bash
+```
+
+single pam conversation
+```
+docker run --rm --env-file env sram-pam-oidc-runner sram_pamtester
+```

@@ -7,10 +7,10 @@ RUN apt-get update && \
         cmake \
         libpam-dev \
         libcurl4-openssl-dev \
-        apt install libboost-dev \
+        libboost-dev \
         pamtester \
         rsyslog && \
     apt-get clean
 
-ADD sram /etc/pam.d/sram
+ADD docker/sram /etc/pam.d/sram
 
