@@ -50,7 +50,7 @@ set(CPACK_DEBIAN_PACKAGE_RELEASE 1)
 
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "OIDC workflow for PAM")
 
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libpam-dev, libcurl4-openssl-dev")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libpam-dev, libcurl4-gnutls-dev")
 set(CPACK_PACKAGE_CONTACT "SURF")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Stefan Wolfsheimer")
 set(CPACK_PACKAGE_DIRECTORY "/packages")
