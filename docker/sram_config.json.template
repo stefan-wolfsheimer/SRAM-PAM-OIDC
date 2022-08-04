@@ -1,13 +1,13 @@
 {
-    "authorization_ep": "$authorization_ep",
-    "response_type": "$response_type",
-    "scope": "$scope",
-    "access_type": "$access_type",
-    "prompt": "$prompt",
-    "token_ep": "$token_ep",
-    "introspect_url": "$introspect_url",
-    "client_id": "$client_id",
-    "client_secret": "$client_secret",
-    "redirect_uri": "$redirect_uri",
-    "result_field": "$result_field"
+    "authorization_ep": "$SRAM_OIDC_AUTHORIZATION_EP",
+    "response_type": "$SRAM_OIDC_RESPONSE_TYPE",
+    "scope": "$SRAM_OIDC_SCOPE",
+    "access_type": "$SRAM_OIDC_ACCESS_TYPE",
+    "prompt": "$SRAM_OIDC_PROMPT",
+    "token_ep": "$SRAM_OIDC_TOKEN_EP",
+    "introspect_url": "$SRAM_OIDC_INTROSPECT_URL",
+    "client_id": "$SRAM_OIDC_CLIENT_ID",
+    "client_secret": "$SRAM_OIDC_CLIENT_SECRET",
+    "redirect_uri": "$SRAM_OIDC_REDIRECT_URI",
+    "result_field": "$SRAM_OIDC_RESULT_FIELD"
 }

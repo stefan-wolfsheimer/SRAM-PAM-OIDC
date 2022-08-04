@@ -29,7 +29,7 @@ RUN apt-get update && \
     apt-get install -y \
     rsyslog  \
     libpam-dev  \
-    libcurl4-openssl-dev \
+    libcurl4-gnutls-dev \
     gettext-base && \
     apt-get clean && \
     dpkg --install /packages/sram-pam-oidc_0.0.1-1_amd64.deb
